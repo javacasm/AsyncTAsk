@@ -52,7 +52,6 @@ public class DownloadImageTask extends AsyncTask<String,Void,Bitmap>
         imageView.setVisibility(View.INVISIBLE);
         //Antes de ejecutar  salta el mensaje
         textView.setText("Realizando descarga en segundo plano");
-        textView.setText("Realizando descarga en segundo plano");
         //Pongo una espera para que se vea porque carga muy rápido
         try {
             this.wait(10000);

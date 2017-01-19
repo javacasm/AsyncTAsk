@@ -7,7 +7,10 @@ import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 import android.widget.Toast;
+
+import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.net.URL;
@@ -21,11 +24,13 @@ public class DownloadImageTask extends AsyncTask<String,Void,Bitmap>
 {
     public ImageView imageView;
     public ProgressBar progressBar;
+   //añado el textview
+    public TextView textView;
 
     // Este es el único método obligatorio de implementar
     @Override
     protected Bitmap doInBackground(String... urls) {
-        Bitmap bitmap=LoadImageFromWebOperations(urls[0]);
+               Bitmap bitmap=LoadImageFromWebOperations(urls[0]);
         return bitmap;
     }
 
@@ -45,11 +50,21 @@ public class DownloadImageTask extends AsyncTask<String,Void,Bitmap>
     protected void onPreExecute() {
         progressBar.setVisibility(ProgressBar.VISIBLE);
         imageView.setVisibility(View.INVISIBLE);
+        //Antes de ejecutar  salta el mensaje
+        textView.setText("Realizando descarga en segundo plano");
+        //Pongo una espera para que se vea porque carga muy rápido
+        try {
+            this.wait(10000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
     }
 
     // Se llama al método cada vez que llamamos a publishProgress
     protected void onProgressUpdate(Integer... values) {
+
         progressBar.setProgress(values[0]);
+
     }
 
     // Se llama automáticamente al método al terminar con doInBackground desde el Subproceso UI
@@ -59,9 +74,11 @@ public class DownloadImageTask extends AsyncTask<String,Void,Bitmap>
             imageView.setVisibility(View.VISIBLE);
             // Hide the progress bar
             progressBar.setVisibility(ProgressBar.INVISIBLE);
+            textView.setText("Imagen correctamente descargada");
         }
         else        {
             Context context=imageView.getContext();
+            textView.setText("Opss algo falló");
             Toast.makeText(context,context.getResources().getText(R.string.error_downloading_image),Toast.LENGTH_LONG).show();
         }
     }
